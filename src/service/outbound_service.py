@@ -1,8 +1,12 @@
-# outbound_service.py
+# service/outbound_service.py
+import sys
+sys.path.insert(0, '.')
+
 from outbound_query import OutboundQuery
 from src.translators.tracos_to_client import TracOSToClientTranslator
 import json
 from pathlib import Path
+
 
 class OutboundService:
     """Processa fluxo outbound: TracOS → Cliente"""
@@ -83,8 +87,7 @@ class OutboundService:
         self.query.close()
 
 
-async def main():
-    """Teste do serviço outbound"""
+if __name__ == "__main__":
     print("="*60)
     print("🧪 TESTE COMPLETO: OUTBOUND SERVICE")
     print("="*60 + "\n")
@@ -92,8 +95,3 @@ async def main():
     service = OutboundService()
     service.process()
     service.close()
-
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
