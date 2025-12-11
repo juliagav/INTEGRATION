@@ -3,23 +3,48 @@ from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from typing import List, Dict
 from datetime import datetime
+import time  # ← ADICIONAR
+
 
 class OutboundQuery:
     """Busca work orders não sincronizadas do MongoDB"""
     
-    def __init__(self):
-        try:
-            self.client = MongoClient("mongodb://localhost:27017", serverSelectionTimeoutMS=5000)
-            # Testa conexão
-            self.client.admin.command('ping')
-            self.db = self.client.tractian
-            self.collection = self.db.workorders
-            print("✅ Conectado ao MongoDB")
-        except (ConnectionFailure, ServerSelectionTimeoutError) as e:
-            print(f"❌ Erro ao conectar no MongoDB: {e}")
-            self.client = None
-            self.collection = None
+    MAX_RETRIES = 3      # ← ADICIONAR
+    RETRY_DELAY = 2      # ← ADICIONAR (segundos)
     
+    def __init__(self):
+        self.client = None
+        self.collection = None
+        self._connect_with_retry()  # ← MUDAR: chama o método com retry
+    
+    # ↓ ADICIONAR ESTE MÉTODO INTEIRO ↓
+    def _connect_with_retry(self):
+        """Tenta conectar ao MongoDB com retry"""
+        for attempt in range(1, self.MAX_RETRIES + 1):
+            try:
+                print(f"🔄 Tentativa {attempt}/{self.MAX_RETRIES} - Conectando ao MongoDB...")
+                
+                self.client = MongoClient(
+                    "mongodb://localhost:27017",
+                    serverSelectionTimeoutMS=5000
+                )
+                self.client.admin.command('ping')
+                self.db = self.client.tractian
+                self.collection = self.db.workorders
+                
+                print("✅ Conectado ao MongoDB!")
+                return  # Sucesso, sai do loop
+                
+            except (ConnectionFailure, ServerSelectionTimeoutError) as e:
+                print(f"❌ Tentativa {attempt}/{self.MAX_RETRIES} falhou: {e}")
+                
+                if attempt < self.MAX_RETRIES:
+                    print(f"⏳ Aguardando {self.RETRY_DELAY}s antes de tentar novamente...")
+                    time.sleep(self.RETRY_DELAY)
+                else:
+                    print("❌ Todas as tentativas falharam. MongoDB indisponível.")
+    
+    # ↓ ESTES MÉTODOS CONTINUAM IGUAIS ↓
     def get_unsynced_work_orders(self) -> List[Dict]:
         """Busca work orders com isSynced = false"""
         if self.collection is None:

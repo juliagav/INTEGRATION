@@ -2,21 +2,45 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from typing import Dict, List
+import time
+
 
 class TracOSAdapter:
     """Conecta e salva dados no MongoDB (TracOS)"""
     
+    MAX_RETRIES = 3
+    RETRY_DELAY = 2  # segundos
+    
     def __init__(self):
-        try:
-            self.client = MongoClient("mongodb://localhost:27017", serverSelectionTimeoutMS=5000)
-            self.client.admin.command('ping')
-            self.db = self.client.tractian
-            self.collection = self.db.workorders
-            print("✅ Conectado ao MongoDB")
-        except (ConnectionFailure, ServerSelectionTimeoutError) as e:
-            print(f"❌ Erro ao conectar no MongoDB: {e}")
-            self.client = None
-            self.collection = None
+        self.client = None
+        self.collection = None
+        self._connect_with_retry()
+    
+    def _connect_with_retry(self):
+        """Tenta conectar ao MongoDB com retry"""
+        for attempt in range(1, self.MAX_RETRIES + 1):
+            try:
+                print(f"🔄 Tentativa {attempt}/{self.MAX_RETRIES} - Conectando ao MongoDB...")
+                
+                self.client = MongoClient(
+                    "mongodb://localhost:27017",
+                    serverSelectionTimeoutMS=5000
+                )
+                self.client.admin.command('ping')
+                self.db = self.client.tractian
+                self.collection = self.db.workorders
+                
+                print("✅ Conectado ao MongoDB!")
+                return
+                
+            except (ConnectionFailure, ServerSelectionTimeoutError) as e:
+                print(f"❌ Tentativa {attempt}/{self.MAX_RETRIES} falhou: {e}")
+                
+                if attempt < self.MAX_RETRIES:
+                    print(f"⏳ Aguardando {self.RETRY_DELAY}s antes de tentar novamente...")
+                    time.sleep(self.RETRY_DELAY)
+                else:
+                    print("❌ Todas as tentativas falharam. MongoDB indisponível.")
     
     def upsert_work_order(self, work_order: Dict) -> bool:
         """Insere ou atualiza work order no MongoDB"""
