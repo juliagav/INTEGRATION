@@ -1,46 +1,14 @@
-# update_record.py
-from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
+# src/update_record.py
+from src.database.connection import get_db, get_workorders_collection
 from typing import Dict, List
-import time
 
 
 class TracOSAdapter:
     """Conecta e salva dados no MongoDB (TracOS)"""
     
-    MAX_RETRIES = 3
-    RETRY_DELAY = 2  # segundos
-    
     def __init__(self):
-        self.client = None
-        self.collection = None
-        self._connect_with_retry()
-    
-    def _connect_with_retry(self):
-        """Tenta conectar ao MongoDB com retry"""
-        for attempt in range(1, self.MAX_RETRIES + 1):
-            try:
-                print(f"🔄 Tentativa {attempt}/{self.MAX_RETRIES} - Conectando ao MongoDB...")
-                
-                self.client = MongoClient(
-                    "mongodb://localhost:27017",
-                    serverSelectionTimeoutMS=5000
-                )
-                self.client.admin.command('ping')
-                self.db = self.client.tractian
-                self.collection = self.db.workorders
-                
-                print("✅ Conectado ao MongoDB!")
-                return
-                
-            except (ConnectionFailure, ServerSelectionTimeoutError) as e:
-                print(f"❌ Tentativa {attempt}/{self.MAX_RETRIES} falhou: {e}")
-                
-                if attempt < self.MAX_RETRIES:
-                    print(f"⏳ Aguardando {self.RETRY_DELAY}s antes de tentar novamente...")
-                    time.sleep(self.RETRY_DELAY)
-                else:
-                    print("❌ Todas as tentativas falharam. MongoDB indisponível.")
+        self.db = get_db()
+        self.collection = get_workorders_collection()
     
     def upsert_work_order(self, work_order: Dict) -> bool:
         """Insere ou atualiza work order no MongoDB"""
@@ -79,13 +47,10 @@ class TracOSAdapter:
     
     def close(self):
         """Fecha conexão com MongoDB"""
-        if self.client:
-            self.client.close()
-            print("✅ Conexão MongoDB fechada")
+        self.db.close()
 
 
-async def main():
-    """Teste do adapter MongoDB"""
+if __name__ == "__main__":
     print("🧪 Testando TracOSAdapter\n")
     
     adapter = TracOSAdapter()
@@ -111,8 +76,3 @@ async def main():
     print(f"Total no banco: {len(all_orders)}")
     
     adapter.close()
-
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
