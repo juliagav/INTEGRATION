@@ -1,15 +1,14 @@
-# src/translators/client_to_tracos.py
 from datetime import datetime
 from typing import Dict
 
 
 class ClientToTracOSTranslator:
-    """Traduz do formato Cliente → TracOS"""
+    """Traduz do formato Cliente > TracOS"""
     
     def translate(self, client_data: Dict) -> Dict:
         """
         Traduz work order do cliente para TracOS
-        
+    
         Args:
             client_data: Dados do cliente (vem do JSON dinamicamente!)
             
@@ -55,5 +54,4 @@ class ClientToTracOSTranslator:
         return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
 
 
-# Este arquivo APENAS define a classe tradutora.
-# Quem usa é o inbound_service.py
+# Definir a classe tradutora, ou seja, que converte do formato Cliente para TracOS e quem usa é o inbound_service.py

@@ -88,13 +88,11 @@ The main objectives of this assesment are to demonstrate:
 ## Setting Up The Project
 
 ### Prerequisites
-
 - Python 3.11+
 - Docker and Docker Compose
 - Poetry for dependency management
 
 ### Installation Steps
-
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
@@ -129,7 +127,6 @@ The main objectives of this assesment are to demonstrate:
    ```
 
 ## Project Structure
-
 ```
 integrations-engineering-code-assesment/
 ├── docker-compose.yml       # MongoDB container configuration
@@ -145,24 +142,120 @@ integrations-engineering-code-assesment/
 |   ...
 ```
 
-## Running the Application
+---
 
+## Running the Application
 1. **Execute the main script**
    ```bash
    python src/main.py
    ```
 
 ## Testing
-
 Run the tests with:
 ```bash
 poetry run pytest
 ```
 
 ## Troubleshooting
-
 - **MongoDB Connection Issues**: Ensure Docker is running and the MongoDB container is up with `docker ps`
 - **Missing Dependencies**: Verify Poetry environment is activated or run `poetry install` again
 - **Permission Issues**: Check file permissions for data directories
 
 
+## The Solution
+I created two main flows:
+
+**Inbound (Client → TracOS):** Reads the files that the client sends > validates the data > translates to TracOS format > saves to MongoDB.
+
+**Outbound (TracOS → Client):** Fetches from MongoDB the work orders that haven't been synced yet > translates back to the client format > generates output JSON files.
+
+---
+
+## Architecture
+I used a modular architecture where each file has its own responsibility. This makes maintenance and testing easier.
+
+The final structure looks like this:
+```
+tractian_integrations_engineering_technical_test/
+│
+├── .env                            # Environment variables (configuration)
+├── docker-compose.yml              # MongoDB container
+├── pyproject.toml                  # Dependencies (Poetry)
+├── README.md
+├── setup.py                        # Setup script for sample data
+│
+├── src/
+│   ├── adapters/
+│   │   └── client_adapter.py       # JSON files
+│   │
+│   ├── database/
+│   │   ├── __init__.py
+│   │   └── connection.py           # MongoDB
+│   │
+│   ├── service/
+│   │   ├── inbound_service.py      # Inbound flow
+│   │   └── outbound_service.py     # Outbound flow
+│   │
+│   ├── translators/
+│   │   ├── client_to_tracos.py     # Client → TracOS
+│   │   └── tracos_to_client.py     # TracOS → Client
+│   │
+│   ├── __init__.py
+│   ├── main.py                     # Entrypoint
+│   ├── outbound_query.py           # Search queries
+│   ├── update_record.py            # MongoDB update
+│   └── validate_fields.py          # Validation
+│
+├── data/
+│   ├── inbound/                    # JSON (Client)
+│   └── outbound/                   # Output JSON (to Client)
+│
+└── tests/
+    ├── __init__.py
+    ├── conftest.py
+    └── test_end_to_end.py          # Test
+```
+
+**Adapters** handle communication with the database, **Translators** do the data conversion, and **Services** are responsible for connecting the files together.
+
+---
+
+## How the Data is Transformed
+Since the client sends data in one format and TracOS uses a different format, the translator does this conversion automatically, analyzing the booleans and setting the correct status.
+
+---
+
+## Configuration
+The system uses environment variables so you can configure it without changing the code:
+
+| Variable | Purpose | Default value |
+|----------|---------|---------------|
+| `MONGO_URI` | MongoDB address | `mongodb://localhost:27017` |
+| `MONGO_DATABASE` | Database name | `tractian` |
+| `DATA_INBOUND_DIR` | Input JSON folder | `./data/inbound` |
+| `DATA_OUTBOUND_DIR` | Output JSON folder | `./data/outbound` |
+
+---
+
+## Tests
+Tests are located in `tests/test_end_to_end.py` where the entire system is validated. This file uses the JSONs from `data/inbound/`, runs the full translation process, and verifies data consistency.
+
+To run:
+```bash
+poetry run pytest tests/ -v -s
+```
+
+---
+
+## Resilience
+**Connection retry:** If MongoDB is unavailable, the system tries to reconnect up to 3 times with a 2-second interval.
+
+**Corrupted files:** If a JSON has an invalid format, it is ignored and the flow continues processing the remaining files.
+
+**Field validation:** Before processing, the system checks if required fields exist and are not empty.
+---
+
+## Technical Choices
+I used **Centralized connection** to avoid repeating the MongoDB connection logic across multiple files. So I centralized everything in `database/connection.py`. This way, if I need to change something, I only change it in one place.
+
+I also used **Translators without fixed data.** The translators don't have any hardcoded data. They receive a dictionary and return another, working dynamically with any work order.
