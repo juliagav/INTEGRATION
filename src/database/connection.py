@@ -9,14 +9,6 @@ load_dotenv()
 
 
 class DatabaseConnection:
-    """
-    Gerencia conexão com MongoDB
-    
-    Centraliza:
-    - Retry logic
-    - Configuração via variáveis de ambiente
-    - Conexão reutilizável
-    """
     
     _instance = None
     _client = None
@@ -92,3 +84,11 @@ def get_workorders_collection() -> Collection | None:
     """Retorna a collection de workorders"""
     db = get_db()
     return db.get_collection("workorders")
+  
+  # Este arquivo implementa uma conexão com o MongoDB
+    """"
+    Centraliza:
+    - Retry logic
+    - Configuração via variáveis de ambiente
+    - Conexão reutilizável
+    """

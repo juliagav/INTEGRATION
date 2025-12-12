@@ -90,7 +90,6 @@ For the solution, I created two main flows and used a modular architecture where
 
 **Outbound (TracOS > Client):** Fetches from MongoDB the work orders that haven't been synced yet > translates back to the client format > generates output JSON files.
 
-
 ## Project Structure
 ```
 tractian_integrations_engineering_technical_test/

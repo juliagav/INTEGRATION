@@ -6,15 +6,7 @@ class ClientToTracOSTranslator:
     """Traduz do formato Cliente > TracOS"""
     
     def translate(self, client_data: Dict) -> Dict:
-        """
-        Traduz work order do cliente para TracOS
-    
-        Args:
-            client_data: Dados do cliente (vem do JSON dinamicamente!)
-            
-        Returns:
-            Dados no formato TracOS
-        """
+        
         # Calcula status baseado nos booleanos
         status = self._calculate_status(client_data)
         

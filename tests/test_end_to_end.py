@@ -15,18 +15,7 @@ from src.database.connection import get_db, get_workorders_collection
 
 
 def test_complete_end_to_end_pipeline():
-    """
-    TESTE END-TO-END COMPLETO
     
-    Fluxo testado:
-    1. Lê JSONs reais de data/inbound/
-    2. Valida campos obrigatórios
-    3. Traduz Cliente → TracOS
-    4. Salva no MongoDB
-    5. Busca do MongoDB
-    6. Traduz TracOS → Cliente
-    7. Verifica consistência dos dados
-    """
     # Setup
     adapter = ClientAdapter()
     client_to_tracos = ClientToTracOSTranslator()
@@ -67,3 +56,14 @@ def test_complete_end_to_end_pipeline():
         assert final["summary"] == original["summary"]
     
     print(f"\n Pipeline testado com {len(work_orders)} work orders!")
+    """
+    TESTE END-TO-END COMPLETO
+    Fluxo testado:
+    1. Lê JSONs reais de data/inbound/
+    2. Valida campos obrigatórios
+    3. Traduz Cliente → TracOS
+    4. Salva no MongoDB
+    5. Busca do MongoDB
+    6. Traduz TracOS → Cliente
+    7. Verifica consistência dos dados
+    """

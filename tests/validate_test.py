@@ -1,4 +1,3 @@
-# tests/validate_test.py
 import pytest
 import sys
 import os
