@@ -8,13 +8,6 @@ from typing import Dict
 
 
 class InboundService:
-    """
-    Processa fluxo INBOUND: Cliente → TracOS
-    1. Lê TODOS os arquivos JSON de data/inbound/
-    2. Valida cada um
-    3. Traduz Cliente → TracOS
-    4. Salva no MongoDB
-    """
     
     def __init__(self):
         self.client_adapter = ClientAdapter()
@@ -92,3 +85,11 @@ if __name__ == "__main__":
     service = InboundService()
     service.process()
     service.close()
+    
+    """
+     Processa fluxo INBOUND: Cliente → TracOS
+    1. Lê TODOS os arquivos JSON de data/inbound/
+    2. Valida cada um
+    3. Traduz Cliente → TracOS
+    4. Salva no MongoDB
+    """

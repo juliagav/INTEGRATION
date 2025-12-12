@@ -86,10 +86,9 @@ The main objectives of this assesment are to demonstrate:
    ## The Solution 
 For the solution, I created two main flows and used a modular architecture where each file has its own responsability. This makes maintenance and testing easier.
 
-**Inbound (Client → TracOS):** Reads the files that the client sends > validates the data > translates to TracOS format > saves to MongoDB.
+**Inbound (Client > TracOS):** Reads the files that the client sends > validates the data > translates to TracOS format > saves to MongoDB.
 
-**Outbound (TracOS → Client):** Fetches from MongoDB the work orders that haven't been synced yet > translates back to the client format > generates output JSON files.
-
+**Outbound (TracOS > Client):** Fetches from MongoDB the work orders that haven't been synced yet > translates back to the client format > generates output JSON files.
 
 ## Project Structure
 ```

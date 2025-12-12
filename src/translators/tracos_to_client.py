@@ -6,13 +6,7 @@ class TracOSToClientTranslator:
     """Traduz do formato TracOS → Cliente"""
     
     def translate(self, tracos_data: Dict) -> Dict:
-        """
-        Traduz work order de TracOS para formato Cliente
-        Args:
-          tracos_data: Dados no formato TracOS (do MongoDB)
-            
-        Retorna os dados no formato do Cliente
-        """
+     
         # Calcula booleanos baseado no status
         status_flags = self._calculate_status_flags(tracos_data.get("status", "in_progress"))
         
