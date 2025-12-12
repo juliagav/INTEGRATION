@@ -5,12 +5,13 @@ import pytest
 import sys
 import os
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # Adiciona raiz do projeto ao path
 
 from src.adapters.client_adapter import ClientAdapter
 from src.translators.client_to_tracos import ClientToTracOSTranslator
 from src.translators.tracos_to_client import TracOSToClientTranslator
 from src.database.connection import get_db, get_workorders_collection
+
 
 
 def test_complete_end_to_end_pipeline():
