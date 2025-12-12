@@ -1,4 +1,3 @@
-# src/update_record.py
 from src.database.connection import get_db, get_workorders_collection
 from typing import Dict, List
 
@@ -13,7 +12,7 @@ class TracOSAdapter:
     def upsert_work_order(self, work_order: Dict) -> bool:
         """Insere ou atualiza work order no MongoDB"""
         if self.collection is None:
-            print("❌ Sem conexão com MongoDB")
+            print(" Sem conexão com MongoDB")
             return False
         
         try:
@@ -24,25 +23,25 @@ class TracOSAdapter:
             )
             
             if result.upserted_id:
-                print(f"✅ Inserida: Work Order #{work_order['number']}")
+                print(f" Inserida: Work Order #{work_order['number']}")
             else:
-                print(f"✅ Atualizada: Work Order #{work_order['number']}")
+                print(f" Atualizada: Work Order #{work_order['number']}")
             return True
         
         except Exception as e:
-            print(f"❌ Erro ao salvar work order #{work_order.get('number')}: {e}")
+            print(f" Erro ao salvar work order #{work_order.get('number')}: {e}")
             return False
     
     def get_all_work_orders(self) -> List[Dict]:
         """Busca todas as work orders do MongoDB"""
         if self.collection is None:
-            print("❌ Sem conexão com MongoDB")
+            print(" Sem conexão com MongoDB")
             return []
         
         try:
             return list(self.collection.find())
         except Exception as e:
-            print(f"❌ Erro ao buscar work orders: {e}")
+            print(f" Erro ao buscar work orders: {e}")
             return []
     
     def close(self):
@@ -51,7 +50,7 @@ class TracOSAdapter:
 
 
 if __name__ == "__main__":
-    print("🧪 Testando TracOSAdapter\n")
+    print(" Testando TracOSAdapter\n")
     
     adapter = TracOSAdapter()
     
@@ -68,10 +67,10 @@ if __name__ == "__main__":
         "syncedAt": None
     }
     
-    print("📥 Inserindo work order...")
+    print(" Inserindo work order...")
     adapter.upsert_work_order(work_order)
     
-    print("\n📊 Buscando todas as work orders...")
+    print("\n Buscando todas as work orders...")
     all_orders = adapter.get_all_work_orders()
     print(f"Total no banco: {len(all_orders)}")
     

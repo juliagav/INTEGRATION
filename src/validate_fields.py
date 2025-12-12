@@ -1,4 +1,4 @@
-# validate_fields.py
+
 from pathlib import Path
 from typing import Dict
 
@@ -14,26 +14,26 @@ class ClientAdapter:
     def validate_work_order(self, work_order: dict) -> bool:
         """Valida se a work order tem todos os campos obrigatórios"""
         
-        # Para cada campo obrigatório
+        # Para cada campo obrigatório 
         for field in self.REQUIRED_FIELDS:
             
             # VALIDAÇÃO 1: Verifica se o campo existe
             if field not in work_order:
-                print(f"❌ Campo obrigatório faltando: {field}")
+                print(f" Campo obrigatório faltando: {field}")
                 return False
             
             # VALIDAÇÃO 2: Verifica se o campo não está vazio
             if work_order[field] is None or work_order[field] == "":
-                print(f"❌ Campo obrigatório vazio: {field}")
+                print(f" Campo obrigatório vazio: {field}")
                 return False
         
         # Se passou em todas as validações
-        print(f"✅ Validação OK para orderNo #{work_order.get('orderNo')}")
+        print(f" Validação OK para orderNo #{work_order.get('orderNo')}")
         return True
 
 
 async def main():
-    print("🧪 Testando Validação...\n")
+    print(" Testando Validação...\n")
     
     adapter = ClientAdapter()
     
