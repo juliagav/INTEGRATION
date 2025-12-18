@@ -27,7 +27,7 @@ class ClientAdapter:
                 print(f" Campo obrigatório vazio: {field}")
                 return False
         
-        print(f"✅ Validação OK para orderNo #{work_order.get('orderNo')}")
+        print(f" Validação OK para orderNo #{work_order.get('orderNo')}")
         return True
     
     def read_inbound_files(self) -> List[Dict]:
