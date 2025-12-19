@@ -119,8 +119,6 @@ tractian_integrations_engineering_technical_test/
 │   ├── __init__.py
 │   ├── main.py                     # Entrypoint
 │   ├── outbound_query.py           # Search queries
-│   ├── update_record.py            # MongoDB update
-│   └── validate_fields.py          # Validation
 │
 ├── data/
 │   ├── inbound/                    # JSON (Client)
