@@ -4,12 +4,10 @@ from pathlib import Path
 from typing import List, Dict
 from dotenv import load_dotenv
 
-# Carrega variáveis do .env
 load_dotenv()
 
 class ClientAdapter:
    
-    """Lê e escreve arquivos JSON do sistema do cliente"""
     REQUIRED_FIELDS = ["orderNo", "summary", "creationDate", "lastUpdateDate"]
     
     def __init__(self):
@@ -17,7 +15,6 @@ class ClientAdapter:
         self.outbound_dir = Path(os.getenv("DATA_OUTBOUND_DIR", "./data/outbound"))
     
     def validate_work_order(self, work_order: Dict) -> bool:
-        """Validando se a work order tem todos os campos obrigatórios"""
         for field in self.REQUIRED_FIELDS:
             if field not in work_order:
                 print(f" Campo obrigatório faltando: {field}")
@@ -31,7 +28,6 @@ class ClientAdapter:
         return True
     
     def read_inbound_files(self) -> List[Dict]:
-        """Lê todos os arquivos JSON da pasta inbound"""
         work_orders = []
         
         if not self.inbound_dir.exists():
@@ -64,7 +60,6 @@ class ClientAdapter:
         return work_orders
     
     def write_outbound_file(self, work_order: Dict) -> bool:
-        """Escreve uma work order como JSON na pasta outbound"""
         try:
             self.outbound_dir.mkdir(parents=True, exist_ok=True)
             
