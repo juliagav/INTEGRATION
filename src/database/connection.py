@@ -14,11 +14,10 @@ class DatabaseConnection:
     _client = None
     _db = None
     
-    MAX_RETRIES = 3  # número máximo de tentativas
-    RETRY_DELAY = 2  # segundos entre tentativas
+    MAX_RETRIES = 3  
+    RETRY_DELAY = 2  
     
     def __new__(cls):
-        """Garantir uma única instância"""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -28,7 +27,6 @@ class DatabaseConnection:
             self._connect_with_retry()
     
     def _connect_with_retry(self):
-        """Tentativa de conexão no MongoDB com retry"""
         mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
         mongo_database = os.getenv("MONGO_DATABASE", "tractian")
         
@@ -55,18 +53,15 @@ class DatabaseConnection:
                     self._db = None
     
     def get_collection(self, collection_name: str) -> Collection | None:
-        """ Se conectado, retorna a collection """
         if self._db is None:
             print(" Sem conexão com MongoDB")
             return None
         return self._db[collection_name]
     
     def is_connected(self) -> bool:
-        """Verifica se está conectado"""
         return self._client is not None and self._db is not None
     
     def close(self):
-        """Fecha conexão com MongoDB"""
         if self._client:
             self._client.close()
             DatabaseConnection._client = None
@@ -74,21 +69,10 @@ class DatabaseConnection:
             print(" Conexão MongoDB fechada")
 
 
-# Funções helper para obter instâncias reutilizáveis
 def get_db() -> DatabaseConnection: 
-    """Retorna instância do banco de dados"""
     return DatabaseConnection()
 
-
 def get_workorders_collection() -> Collection | None:
-    """Retorna a collection de workorders"""
     db = get_db()
     return db.get_collection("workorders")
-  
-  # Este arquivo implementa uma conexão com o MongoDB
-    """"
-    Centraliza:
-    - Retry logic
-    - Configuração via variáveis de ambiente
-    - Conexão reutilizável
-    """
+    
