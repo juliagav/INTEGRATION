@@ -75,8 +75,4 @@ def get_db() -> DatabaseConnection:
 def get_workorders_collection() -> Collection | None:
     db = get_db()
     return db.get_collection("workorders")
-<<<<<<< HEAD
   
-=======
-    
->>>>>>> 559fbfc373304c439ec0cc12cbc2bb09ec03c2d6
