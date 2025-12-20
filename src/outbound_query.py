@@ -4,14 +4,12 @@ from datetime import datetime
 
 
 class OutboundQuery:
-    """Busca work orders não sincronizadas do MongoDB"""
     
     def __init__(self):
         self.db = get_db()
         self.collection = get_workorders_collection()
     
     def get_unsynced_work_orders(self) -> List[Dict]:
-        """Busca work orders com isSynced = false"""
         if self.collection is None:
             print(" Sem conexão com MongoDB")
             return []
@@ -26,7 +24,6 @@ class OutboundQuery:
             return []
     
     def mark_as_synced(self, work_order_number: int) -> bool:
-        """Marca work order como sincronizada"""
         if self.collection is None:
             print(" Sem conexão com MongoDB")
             return False
@@ -49,7 +46,6 @@ class OutboundQuery:
             return False
     
     def close(self):
-        """Fecha conexão com MongoDB"""
         self.db.close()
 
 

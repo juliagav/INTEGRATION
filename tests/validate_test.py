@@ -8,7 +8,6 @@ from src.adapters.client_adapter import ClientAdapter
 
 
 def test_validate_valid_workorder():
-    """Teste 1: Work order VÁLIDA"""
     adapter = ClientAdapter()
     
     valid_wo = {
@@ -23,7 +22,6 @@ def test_validate_valid_workorder():
 
 
 def test_validate_workorder_missing_field():
-    """Teste 2: Work order INVÁLIDA (falta campo)"""
     adapter = ClientAdapter()
     
     invalid_wo = {
@@ -36,7 +34,6 @@ def test_validate_workorder_missing_field():
 
 
 def test_validate_workorder_empty_field():
-    """Teste 3: Work order INVÁLIDA (campo vazio)"""
     adapter = ClientAdapter()
     
     empty_wo = {

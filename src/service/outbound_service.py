@@ -13,7 +13,6 @@ load_dotenv()
 
 
 class OutboundService:
-    """Processa fluxo outbound: TracOS > Cliente"""
     
     def __init__(self):
         self.query = OutboundQuery()
@@ -22,7 +21,6 @@ class OutboundService:
         self.outbound_dir.mkdir(parents=True, exist_ok=True)
     
     def write_json(self, work_order: dict) -> bool:
-        """Escreve JSON em data/outbound/"""
         filename = f"{work_order['orderNo']}.json"
         file_path = self.outbound_dir / filename
         
@@ -46,7 +44,6 @@ class OutboundService:
             return False
     
     def process(self):
-        """Executa fluxo outbound"""
         print(" Iniciando fluxo OUTBOUND\n")
         
         unsynced = self.query.get_unsynced_work_orders()
@@ -81,7 +78,6 @@ class OutboundService:
         print(f" Resultado: {sucesso} sucesso, {falha} falha")
     
     def close(self):
-        """Fecha conexão"""
         self.query.close()
 
 

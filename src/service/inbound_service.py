@@ -13,12 +13,10 @@ class InboundService:
         self.client_adapter = ClientAdapter()
         self.translator = ClientToTracOSTranslator()
         
-        # conexão centralizada 
         self.db = get_db()
         self.collection = get_workorders_collection()
     
     def save_to_mongodb(self, work_order: Dict) -> bool:
-        """Salva work order no MongoDB"""
         if self.collection is None:
             print("Sem conexão com MongoDB")
             return False
@@ -41,7 +39,6 @@ class InboundService:
             return False
     
     def process(self):
-        """Executa o fluxo INBOUND"""
         print("Iniciando fluxo INBOUND\n")
         
         work_orders = self.client_adapter.read_inbound_files()
@@ -73,7 +70,6 @@ class InboundService:
         print(f" Resultado: {sucesso} sucesso, {falha} falha")
     
     def close(self):
-        """Fecha conexão com MongoDB"""
         self.db.close()
 
 
@@ -86,10 +82,3 @@ if __name__ == "__main__":
     service.process()
     service.close()
     
-    """
-     Processa fluxo INBOUND: Cliente → TracOS
-    1. Lê TODOS os arquivos JSON de data/inbound/
-    2. Valida cada um
-    3. Traduz Cliente → TracOS
-    4. Salva no MongoDB
-    """

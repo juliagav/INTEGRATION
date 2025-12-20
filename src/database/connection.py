@@ -81,14 +81,6 @@ def get_db() -> DatabaseConnection:
 
 
 def get_workorders_collection() -> Collection | None:
-    """Retorna a collection de workorders"""
     db = get_db()
     return db.get_collection("workorders")
   
-  # Este arquivo implementa uma conexão com o MongoDB
-    """"
-    Centraliza:
-    - Retry logic
-    - Configuração via variáveis de ambiente
-    - Conexão reutilizável
-    """

@@ -1,7 +1,7 @@
 """
 Teste End-to-End do fluxo de Integração
 """
-import pytest
+#import pytest
 import sys
 import os
 
